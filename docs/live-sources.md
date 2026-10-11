@@ -66,3 +66,12 @@ Engineering must establish:
 Do not ask the user to find feeds. Genuine access/provenance blockers remain
 tracked separately and do not prevent reviewing the foundation. No live adapter,
 release, production change or recipes-cli import is part of this PR.
+
+## Renewed discovery after foundation merge — 11 October 2026
+
+PR #3 is merged. The [renewed evidence ledger](live-source-investigation-2026-10-11.md)
+records retailer/supply-chain routes, newly rejected comparison services,
+unreadable evidence, per-retailer unresolved gates and next actions. No eligible
+live in-store feed was verified; all three providers remain unconfigured.
+The [permission enquiry draft](live-source-permission-enquiry.md) is prepared but
+not sent; outreach/procurement/live testing are not implicitly authorized.
