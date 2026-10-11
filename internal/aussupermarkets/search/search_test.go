@@ -374,3 +374,50 @@ func TestEmptyResultsStillRequireActualContextAndSource(t *testing.T) {
 		}
 	}
 }
+
+func TestConditionalPackCannotHideUnconditionalOffer(t *testing.T) {
+	for _, conditions := range []string{"members only", "buy 2 packs", " ", "\u00a0"} {
+		for _, order := range []search.Sort{search.SortPrice, search.SortName} {
+			for _, limit := range []int{1, 2, 3} {
+				for _, reversed := range []bool{false, true} {
+					t.Run(fmt.Sprintf("conditions=%q/%s/limit=%d/reversed=%t", conditions, order, limit, reversed), func(t *testing.T) {
+						conditional := pack("conditional", "A conditional", 1)
+						conditional.Conditions = conditions
+						standard := pack("standard", "Standard", 500)
+						unknown := search.Product{ID: "unknown", Name: "Z unknown"}
+						products := []search.Product{conditional, unknown, standard}
+						if reversed {
+							products[0], products[2] = products[2], products[0]
+						}
+						original := append([]search.Product(nil), products...)
+						o := options()
+						o.Sort = order
+						o.MaxResults = limit
+						r := run(t, context.Background(), []search.Provider{fake{search.Coles, func(_ context.Context, req search.Request) (search.Result, error) {
+							return result(req, products...), nil
+						}}}, o)
+						want := []string{"standard", "conditional", "unknown"}
+						if order == search.SortName {
+							want = []string{"conditional", "standard", "unknown"}
+						}
+						g := r.Groups[0]
+						if g.Status != "ok" || !reflect.DeepEqual(ids(g), want[:limit]) {
+							t.Fatalf("conditional pack displaced standard offer: got status=%s IDs=%v want=%v", g.Status, ids(g), want[:limit])
+						}
+						if g.CandidateCount != 3 || g.Limited != (limit < 3) {
+							t.Fatalf("sort-before-limit metadata: %+v", g)
+						}
+						for _, p := range g.Products {
+							if p.ID == "conditional" && (p.Conditions != conditions || p.Price.MinorUnits != 1) {
+								t.Fatal("conditional offer details lost")
+							}
+						}
+						if !reflect.DeepEqual(products, original) {
+							t.Fatal("provider-owned candidates mutated")
+						}
+					})
+				}
+			}
+		}
+	}
+}

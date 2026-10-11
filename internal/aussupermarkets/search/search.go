@@ -168,7 +168,11 @@ func setError(g *Group, err error) {
 	}
 }
 
-func comparable(p Product) bool { return p.Price != nil && p.PriceBasis == "pack" }
+// A pack total is standard only when it has no conditions. Treat even whitespace
+// as a nonempty condition conservatively; adapters should not erase restrictions.
+func comparable(p Product) bool {
+	return p.Price != nil && p.PriceBasis == "pack" && p.Conditions == ""
+}
 func less(a, b Product, order Sort) bool {
 	if order == SortPrice {
 		ac, bc := comparable(a), comparable(b)

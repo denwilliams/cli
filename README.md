@@ -54,10 +54,13 @@ with a fabricated store or silently changed shopping channel.
   `unconfigured`, `unavailable`, `error`, `timeout` and `cancelled`.
 - AUD money uses **nonnegative int64 cents** (`minor_units`), never float prices.
   `price: null` means unknown, not zero. Unit prices carry an explicit unit.
-- Price sort ranks standard, unconditional `pack` totals first by cents. Weight
-  estimates, member/multibuy and unknown prices follow by name/ID, not by
-  incomparable amounts. Conditional prices require conditions. Pack sizes and
-  unit prices are disclosed, **not quantity-normalized or equated**.
+- Price sort ranks standard, unconditional `pack` totals first by cents. **Any
+  nonempty `conditions` value (including whitespace) excludes an offer from this
+  tier, even when its basis is `pack`.** Weight estimates, conditional pack prices,
+  member/multibuy and unknown prices follow by name/ID, not by incomparable
+  amounts. Member/multibuy prices require meaningful conditions. Conditional
+  pack offers retain their original basis, price and conditions in output. Pack
+  sizes and unit prices are disclosed, **not quantity-normalized or equated**.
 - Name comparison uses Go's Unicode lowercase strings, then original name, then
   unique product ID for deterministic ties; it is not locale-aware collation.
   Name sort is independent of price availability/basis.

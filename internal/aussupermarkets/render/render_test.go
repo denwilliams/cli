@@ -92,3 +92,26 @@ func TestHumanEscapesUntrustedTextAndLabelsConditionalPrices(t *testing.T) {
 		t.Fatal(b.String())
 	}
 }
+
+func TestConditionalPackRetainsPriceAndConditionsInBothFormats(t *testing.T) {
+	r := fixture()
+	p := &r.Groups[0].Products[0]
+	p.Conditions = "members only"
+	var human, machine bytes.Buffer
+	if err := render.Human(&human, r); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(human.String(), "AUD 10.02 (pack)") || !strings.Contains(human.String(), `conditions="members only"`) {
+		t.Fatal(human.String())
+	}
+	if err := render.JSON(&machine, r); err != nil {
+		t.Fatal(err)
+	}
+	var decoded search.Report
+	if err := json.Unmarshal(machine.Bytes(), &decoded); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(r, decoded) {
+		t.Fatal("conditional pack metadata changed")
+	}
+}

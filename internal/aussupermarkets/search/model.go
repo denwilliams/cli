@@ -44,7 +44,7 @@ type Product struct {
 	PriceBasis   string     `json:"price_basis"` // pack, weight, member or multibuy
 	PackSize     string     `json:"pack_size,omitempty"`
 	UnitPrice    *UnitPrice `json:"unit_price,omitempty"`
-	Conditions   string     `json:"conditions,omitempty"`
+	Conditions   string     `json:"conditions,omitempty"` // any nonempty value excludes standard-pack comparability
 	Availability string     `json:"availability,omitempty"`
 	URL          string     `json:"url,omitempty"`
 	ObservedAt   *time.Time `json:"observed_at,omitempty"`
