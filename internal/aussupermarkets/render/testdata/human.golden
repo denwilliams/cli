@@ -1,0 +1,15 @@
+In-store search "milk" (ascending price; max 2 per retailer)
+Pack prices are not quantity-normalized. In price sort, weight/conditional/unknown prices follow standard pack prices.
+
+coles [ok]
+  Requested: channel="in_store" postcode="0800" store="test-store"
+  Actual: channel="in_store" postcode="0800" store="test-store"
+  Source: "synthetic fixture" "https://example.invalid/feed"
+  Freshness: observed=2026-01-02T03:04:05Z retrieved=unknown
+  Coverage: "sample"; provider-truncated=true; candidates=3; limited=true
+  - "Fixture Milk" — AUD 10.02 (pack); pack="2L"; unit=AUD 5.01 / "1L"; availability="unknown"; observed=2026-01-02T03:04:05Z; url="https://example.invalid/a"
+  - "Unknown Milk" — price unknown; observed=unknown
+
+aldi [unconfigured]
+  Requested: channel="in_store" postcode="unspecified" store="unspecified"
+  "no permitted feed"

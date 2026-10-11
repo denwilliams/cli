@@ -1,0 +1,42 @@
+name: Go foundation
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: ['1.26.x', '1.27.x']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+          cache: false
+      - name: Format
+        run: test -z "$(gofmt -l cmd internal)"
+      - run: go vet ./...
+      - run: go test ./...
+      - run: go test -race ./...
+      - run: go build ./...
+      - name: Build and offline command smokes
+        shell: bash
+        run: |
+          go build -o /tmp/aussupermarkets ./cmd/aussupermarkets
+          /tmp/aussupermarkets --help
+          set +e
+          /tmp/aussupermarkets --format json milk > /tmp/search.json
+          code=$?
+          set -e
+          test "$code" = 1
+          python3 - <<'PY'
+          import json
+          r = json.load(open('/tmp/search.json'))
+          assert [g['retailer'] for g in r['groups']] == ['coles', 'woolworths', 'aldi']
+          assert all(g['status'] == 'unconfigured' and g['products'] == [] for g in r['groups'])
+          assert all(g['location'].get('store_id') is None for g in r['groups'])
+          PY
