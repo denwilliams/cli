@@ -1,0 +1,81 @@
+{
+  "query": "milk",
+  "sort": "price",
+  "max_results_per_retailer": 2,
+  "groups": [
+    {
+      "retailer": "coles",
+      "status": "ok",
+      "requested_location": {
+        "channel": "in_store",
+        "postcode": "0800",
+        "store_id": "test-store"
+      },
+      "location": {
+        "channel": "in_store",
+        "postcode": "0800",
+        "store_id": "test-store"
+      },
+      "source": {
+        "name": "synthetic fixture",
+        "url": "https://example.invalid/feed",
+        "observed_at": "2026-01-02T03:04:05Z"
+      },
+      "coverage": {
+        "scope": "sample",
+        "truncated": true
+      },
+      "candidate_count": 3,
+      "limited": true,
+      "products": [
+        {
+          "id": "a",
+          "name": "Fixture Milk",
+          "price": {
+            "minor_units": 1002,
+            "currency": "AUD"
+          },
+          "price_basis": "pack",
+          "pack_size": "2L",
+          "unit_price": {
+            "amount": {
+              "minor_units": 501,
+              "currency": "AUD"
+            },
+            "unit": "1L"
+          },
+          "availability": "unknown",
+          "url": "https://example.invalid/a",
+          "observed_at": "2026-01-02T03:04:05Z"
+        },
+        {
+          "id": "b",
+          "name": "Unknown Milk",
+          "price": null,
+          "price_basis": ""
+        }
+      ]
+    },
+    {
+      "retailer": "aldi",
+      "status": "unconfigured",
+      "error": "no permitted feed",
+      "requested_location": {
+        "channel": "in_store"
+      },
+      "location": {
+        "channel": "in_store"
+      },
+      "source": {
+        "name": ""
+      },
+      "coverage": {
+        "scope": "unknown",
+        "truncated": false
+      },
+      "candidate_count": 0,
+      "limited": false,
+      "products": []
+    }
+  ]
+}
